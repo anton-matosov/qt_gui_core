@@ -30,10 +30,13 @@ set(qt_gui_cpp_sip_DEPENDENT_FILES
 set(qt_gui_cpp_sip_INCLUDE_DIRS ${qt_gui_cpp_INCLUDE_DIRS} "${CMAKE_CURRENT_SOURCE_DIR}/../../include")
 set(qt_gui_cpp_sip_LIBRARY_DIRS ${qt_gui_cpp_LIBRARY_DIRS} lib)
 set(qt_gui_cpp_sip_LDFLAGS_OTHER ${qt_gui_cpp_LDFLAGS_OTHER})
+if (APPLE)
+  set(qt_gui_cpp_sip_LDFLAGS_OTHER ${qt_gui_cpp_LDFLAGS_OTHER} "-undefined dynamic_lookup")
+endif ()
 
 set(_qt_gui_cpp_sip_LIBRARIES
   ${pluginlib_LIBRARIES}
-  ${PYTHON_LIBRARY}
+  
   qt_gui_cpp
 )
 
