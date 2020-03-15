@@ -31,8 +31,8 @@ find_package(PythonExtra MODULE REQUIRED)
 
 # maintain context for different named target
 set(qt_gui_cpp_sip_INCLUDE_DIRS ${qt_gui_cpp_INCLUDE_DIRS} "${CMAKE_CURRENT_SOURCE_DIR}/../../include")
-set(qt_gui_cpp_sip_LIBRARY_DIRS ${qt_gui_cpp_LIBRARY_DIRS} lib ${PythonExtra_LIBRARIES})
-set(qt_gui_cpp_sip_LDFLAGS_OTHER ${qt_gui_cpp_LDFLAGS_OTHER})
+set(qt_gui_cpp_sip_LIBRARY_DIRS ${qt_gui_cpp_LIBRARY_DIRS} ${PythonExtra_LIBRARIES})
+set(qt_gui_cpp_sip_LDFLAGS_OTHER ${qt_gui_cpp_LDFLAGS_OTHER} ${PythonExtra_LDFLAGS})
 
 set(_qt_gui_cpp_sip_LIBRARIES
   ${pluginlib_LIBRARIES}
