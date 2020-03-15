@@ -14,6 +14,7 @@
   <author>Dirk Thomas</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>python_cmake_module</buildtool_depend>
 
   <build_depend>pkg-config</build_depend>
   <build_depend version_gte="1.9.23">pluginlib</build_depend>
