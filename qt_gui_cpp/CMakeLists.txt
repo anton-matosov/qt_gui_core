@@ -11,16 +11,19 @@ find_package(ament_cmake REQUIRED)
 if(WIN32)
   message(STATUS "${PROJECT_NAME} is not yet supported on Windows. Package will not be built.")
   ament_package()
+  file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/plugin.xml"
+    "<library path=\"src\"/>")
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/plugin.xml"
+    DESTINATION share/${PROJECT_NAME})
   return()
 endif()
 
 find_package(pluginlib REQUIRED)
 find_package(tinyxml2_vendor REQUIRED)
+find_package(TinyXML2 REQUIRED)
 
 ament_python_install_package(${PROJECT_NAME}
   PACKAGE_DIR src/${PROJECT_NAME})
-
-include_directories(include ${TinyXML2_INCLUDE_DIRS} ${pluginlib_INCLUDE_DIRS})
 
 add_subdirectory(src)
 

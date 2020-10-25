@@ -2,6 +2,25 @@
 Changelog for package qt_dotgraph
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.2 (2020-09-18)
+------------------
+* add API to set edge tooltip (`#237 <https://github.com/ros-visualization/qt_gui_core/issues/237>`_)
+
+1.1.1 (2020-08-03)
+------------------
+
+1.1.0 (2020-05-27)
+------------------
+
+1.0.9 (2020-05-26)
+------------------
+
+1.0.8 (2020-05-05)
+------------------
+* please flake8 (`#207 <https://github.com/ros-visualization/qt_gui_core/issues/207>`_)
+* use the portable way to decide the line break (`#200 <https://github.com/ros-visualization/qt_gui_core/issues/200>`_)
+* make tests more flexible in terms of whitespaces (`#191 <https://github.com/ros-visualization/qt_gui_core/issues/191>`_, `#193 <https://github.com/ros-visualization/qt_gui_core/issues/193>`_)
+
 1.0.7 (2019-09-30)
 ------------------
 

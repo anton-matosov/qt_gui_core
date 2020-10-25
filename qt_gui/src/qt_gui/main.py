@@ -38,7 +38,7 @@ import platform
 import signal
 import sys
 
-from ament_index_python.resources import get_resource
+from ament_index_python.resources import get_resource, has_resource
 
 
 class Main(object):
@@ -92,15 +92,15 @@ class Main(object):
             help='force a rediscover of plugins')
         common_group.add_argument(
             '-h', '--help', action='help', help='show this help message and exit')
+        common_group.add_argument(
+                '-ht', '--hide-title', dest='hide_title', action='store_true',
+                help='hide the title label, the icon, and the help button (combine with -l and -f '
+                     'to eliminate the entire title bar and reclaim the space)')
         if not standalone:
             common_group.add_argument(
                 '-l', '--lock-perspective', dest='lock_perspective', action='store_true',
                 help='lock the GUI to the used perspective (hide menu bar and close buttons of '
                      'plugins)')
-            common_group.add_argument(
-                '-ht', '--hide-title', dest='hide_title', action='store_true',
-                help='hide the title label, the icon, and the help button (combine with -l and -f '
-                     'to eliminate the entire title bar and reclaim the space)')
 
             common_group.add_argument(
                 '-p', '--perspective', dest='perspective', type=str, metavar='PERSPECTIVE',
@@ -191,20 +191,22 @@ class Main(object):
     def _add_reload_paths(self, reload_importer):
         reload_importer.add_reload_path(os.path.join(os.path.dirname(__file__), *('..',) * 4))
 
-    def _check_icon_theme_compliance(self):
+    def _set_theme_if_necessary(self):
         from python_qt_binding.QtGui import QIcon
-        # TODO find a better way to verify Theme standard compliance
-        if QIcon.fromTheme('document-save').isNull() or \
-           QIcon.fromTheme('document-open').isNull() or \
-           QIcon.fromTheme('edit-cut').isNull() or \
-           QIcon.fromTheme('object-flip-horizontal').isNull():
-            if platform.system() == 'Darwin' and \
-                    '/usr/local/share/icons' not in QIcon.themeSearchPaths():
-                QIcon.setThemeSearchPaths(QIcon.themeSearchPaths() + ['/usr/local/share/icons'])
-            original_theme = QIcon.themeName()
-            QIcon.setThemeName('Tango')
-            if QIcon.fromTheme('document-save').isNull():
-                QIcon.setThemeName(original_theme)
+        # if themeName is defined we are on Linux
+        # otherwise try to use the them provided by tango_icons_vendor
+        if not QIcon.themeName():
+            package_path = has_resource('packages', 'tango_icons_vendor')
+            if package_path:
+                icon_paths = QIcon.themeSearchPaths()
+                icon_paths.append(os.path.join(
+                    package_path, 'share', 'tango_icons_vendor',
+                    'resource', 'icons', 'Tango'))
+                QIcon.setThemeSearchPaths(icon_paths)
+                QIcon.setThemeName('scalable')
+            elif platform.system() != 'Linux':
+                print("The 'tango_icons_vendor' package was not found - icons "
+                      'will not work', file=sys.stderr)
 
     def create_application(self, argv):
         from python_qt_binding.QtCore import Qt
@@ -246,7 +248,6 @@ class Main(object):
         if standalone:
             self._options.freeze_layout = False
             self._options.lock_perspective = False
-            self._options.hide_title = False
             self._options.perspective = None
             self._options.perspective_file = None
             self._options.standalone_plugin = standalone
@@ -445,7 +446,7 @@ class Main(object):
 
         app = self.create_application(argv)
 
-        self._check_icon_theme_compliance()
+        self._set_theme_if_necessary()
 
         settings = QSettings(
             QSettings.IniFormat, QSettings.UserScope, 'ros.org', self._settings_filename)

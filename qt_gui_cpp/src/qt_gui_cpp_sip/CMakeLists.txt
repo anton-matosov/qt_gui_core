@@ -34,8 +34,12 @@ set(qt_gui_cpp_sip_INCLUDE_DIRS ${qt_gui_cpp_INCLUDE_DIRS} "${CMAKE_CURRENT_SOUR
 set(qt_gui_cpp_sip_LIBRARY_DIRS ${qt_gui_cpp_LIBRARY_DIRS})
 set(qt_gui_cpp_sip_LDFLAGS_OTHER ${qt_gui_cpp_LDFLAGS_OTHER} ${PythonExtra_LDFLAGS})
 
+ament_get_recursive_properties(deps_include_dirs deps_libraries ${pluginlib_TARGETS})
+list(APPEND deps_include_dirs ${TinyXML2_INCLUDE_DIRS})
+list(APPEND deps_libraries ${TinyXML2_LIBRARIES})
+
 set(_qt_gui_cpp_sip_LIBRARIES
-  ${pluginlib_LIBRARIES}
+  ${deps_libraries}
   qt_gui_cpp
 )
 if (NOT APPLE)
@@ -53,16 +57,14 @@ foreach(_lib_name ${_qt_gui_cpp_sip_LIBRARIES})
   endif()
 endforeach()
 
-set(qt_gui_cpp_INCLUDE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../include ${pluginlib_INCLUDE_DIRS})
-
 find_package(python_qt_binding REQUIRED)
 include(${python_qt_binding_DIR}/sip_helper.cmake)
 
 ament_export_dependencies(pluginlib)
-include_directories(${PROJECT_NAME} ${qt_gui_cpp_INCLUDE_DIRECTORIES} ${pluginlib_INCLUDE_DIRS})
+include_directories(${PROJECT_NAME} ${qt_gui_cpp_INCLUDE_DIRECTORIES} ${deps_include_dirs})
 
 # The include directories used by build_sip_binding are different than the one set in include directories
-set(qt_gui_cpp_sip_INCLUDE_DIRS ${qt_gui_cpp_sip_INCLUDE_DIRS} ${pluginlib_INCLUDE_DIRS})
+set(qt_gui_cpp_sip_INCLUDE_DIRS ${qt_gui_cpp_sip_INCLUDE_DIRS} ${deps_include_dirs})
 
 if(sip_helper_FOUND)
   list(APPEND qt_gui_cpp_BINDINGS "sip")
