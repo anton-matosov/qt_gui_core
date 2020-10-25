@@ -32,7 +32,7 @@ find_package(PythonExtra MODULE REQUIRED)
 # maintain context for different named target
 set(qt_gui_cpp_sip_INCLUDE_DIRS ${qt_gui_cpp_INCLUDE_DIRS} "${CMAKE_CURRENT_SOURCE_DIR}/../../include")
 set(qt_gui_cpp_sip_LIBRARY_DIRS ${qt_gui_cpp_LIBRARY_DIRS})
-set(qt_gui_cpp_sip_LDFLAGS_OTHER ${qt_gui_cpp_LDFLAGS_OTHER} ${PythonExtra_LDFLAGS})
+set(qt_gui_cpp_sip_LDFLAGS_OTHER ${qt_gui_cpp_LDFLAGS_OTHER})
 
 ament_get_recursive_properties(deps_include_dirs deps_libraries ${pluginlib_TARGETS})
 list(APPEND deps_include_dirs ${TinyXML2_INCLUDE_DIRS})
@@ -42,8 +42,11 @@ set(_qt_gui_cpp_sip_LIBRARIES
   ${deps_libraries}
   qt_gui_cpp
 )
-if (NOT APPLE)
-  list(APPEND _qt_gui_cpp_sip_LIBRARIES ${PythonExtra_LIBRARIES})
+
+if (APPLE OR UNIX)
+  list(APPEND qt_gui_cpp_LDFLAGS_OTHER ${PythonExtra_LDFLAGS})
+else()
+  # list(APPEND _qt_gui_cpp_sip_LIBRARIES ${PythonExtra_LIBRARIES})
 endif()
 
 # sip needs libraries to have resolved paths and cannot link to cmake targets
