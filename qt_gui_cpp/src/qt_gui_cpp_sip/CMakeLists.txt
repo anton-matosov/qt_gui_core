@@ -43,10 +43,12 @@ set(_qt_gui_cpp_sip_LIBRARIES
   qt_gui_cpp
 )
 
+# SIP uses Makefile under the hood which appends '-l' in front of each entry of LIBRARIES list
+# this doesn't work for passing flags, so they have to be passed explicitly via LDFLAGS
 if (APPLE OR UNIX)
   list(APPEND qt_gui_cpp_LDFLAGS_OTHER ${PythonExtra_LDFLAGS})
 else()
-  # list(APPEND _qt_gui_cpp_sip_LIBRARIES ${PythonExtra_LIBRARIES})
+  list(APPEND _qt_gui_cpp_sip_LIBRARIES ${PythonExtra_EXTENSION_LIBRARIES})
 endif()
 
 # sip needs libraries to have resolved paths and cannot link to cmake targets
